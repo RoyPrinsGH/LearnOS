@@ -3,6 +3,37 @@ bits 16
 
 %define ENDL 0x0D, 0x0A
 
+
+;
+; FAT12 header
+;
+jmp short start
+nop
+bdb_oem:                    db "MSWIN4.1"
+bdb_bytes_per_sector:       dw 512
+bdb_sectors_per_cluster:    db 1
+bdb_reserved_sectors:       dw 1
+bdb_number_of_fats:         db 2
+bdb_root_entries:           dw 0xE0
+bdb_total_sectors:          dw 2880
+bdb_media_descriptor:       db 0xF0
+bdb_sectors_per_fat:        dw 9
+bdb_sectors_per_track:      dw 18
+bdb_number_of_heads:        dw 2
+bdb_hidden_sectors:         dd 0
+bdb_total_sectors_big:      dd 0
+
+;
+; Extended boot sector
+;
+ebr_drive_number:           db 0
+ebr_reserved:               db 0
+ebr_signature:              db 0x29
+ebr_volume_id:              dd 0x12345678
+ebr_volume_label:           db 'LEARNOS    '
+ebr_file_system:            db 'FAT12   '
+
+
 start:
     jmp main
 
@@ -36,11 +67,11 @@ puts:
 main:
     ; setup data segments
     mov ax, 0x0000
-    mov ds, ax  ; data segment is set to 0x0000 because we are in real mode
-    mov es, ax  ; extra segment is set to 0x0000 because we are in real mode
+    mov ds, ax      ; data segment is set to 0x0000 because we are in real mode
+    mov es, ax      ; extra segment is set to 0x0000 because we are in real mode
 
     ; setup stack
-    mov ss, ax  ; stack segment is set to 0x0000 because we are in real mode
+    mov ss, ax      ; stack segment is set to 0x0000 because we are in real mode
     mov sp, 0x7C00  ; stack grows downwards and starts at 0x7C00 to prevent overwriting bootloader
 
     mov si, msg_hello
