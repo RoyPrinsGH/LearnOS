@@ -86,7 +86,7 @@ main:
     mov si, msg_hello
     call puts
 
-    hlt
+    jmp halt
 
 floppy_error:
     mov si, floppy_error_msg
@@ -98,7 +98,7 @@ wait_for_key:
     int 0x16
     jmp 0xFFFF:0x0000
 
-.halt:
+halt:
     cli
     hlt
 
@@ -148,7 +148,6 @@ lba_to_chs:
 ;   es:bx - buffer to read the sector into
 ;
 disk_read:
-
     push ax
     push bx
     push cx
